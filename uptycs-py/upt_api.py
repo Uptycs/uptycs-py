@@ -32,15 +32,15 @@ Some commonly used classes include:
    2022.05.06   steren@uptycs.com  Added API key expiration
 """
 
-
-import json
-import requests
 import sys
-import jwt
-import datetime
-import logging
+import json
 import os
 import time
+import datetime
+import logging
+
+import requests
+import jwt
 from requests.packages import urllib3
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -120,7 +120,7 @@ class UptApiCall:
             self.rc = 0
 
     def get_items(self):
-        # store each JSON item in a collection
+        """store each JSON item in a collection"""
         for i in self.response_json['items']:
             self.items.append(i)
 
@@ -551,7 +551,7 @@ class UptLkpTable:
 
     def create(self, upt_auth, column_name, sql='', data=[], force=False):
         """ Creates a lookup table with entries from the supplied 'data' array or from executing the supplied 'sql'.
-            Note column_name must appear in the sql statement.
+            Note: column_name must appear in the sql statement.
             If (force == True) then any existing lookup table of the same name will be overwritten
         """
         auth = upt_auth
@@ -634,7 +634,7 @@ class UptLkpTable:
 
     def get(self, upt_auth):
         """ Gets the id, active status, and row_count for an existing lookup table  """
-        result = uptapi.UptApiCall(auth, '/lookupTables', 'GET', {})
+        result = UptApiCall(upt_auth, '/lookupTables', 'GET', {})
         found = False
         for item in result.response_json['items']:
             if item['name'] == self.lkp_table_name:
@@ -651,10 +651,10 @@ class UptLkpTable:
         """
         auth = upt_auth
         if not self.id:
-            self.get()
+            self.get(auth)
 
         # get the lookup table data
-        result = uptapi.UptApiCall(auth, '/lookupTables/'+self.id+'/data', 'GET', {})
+        result = UptApiCall(auth, '/lookupTables/'+self.id+'/data', 'GET', {})
 
         for item in result.response_json['items']:
             foo = 'bar' # add items to array here
